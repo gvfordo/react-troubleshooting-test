@@ -10,21 +10,18 @@ class App extends Component {
   };
 
   componentDidMount() {
-    fetch('https://jsonplaceholder.typicode.com/pots')
-      .then(posts => {
-
-        this.setState({ posts })
-      }));
+    fetch('https://jsonplaceholder.typicode.com/posts')
+    .then(res => res.json())
+    .then(posts => this.setState({ posts }));
 
     fetch('https://jsonplaceholder.typicode.com/users')
-      .then(users => {
-        this.setState({ usersById: user })
-      }));
+    .then(res => res.json())
+    .then(users => this.setState({ usersById: _.indexBy(users, 'id') }));
   };
 
 
   render() {
-
+    const { usersById, posts } = this.state;
     return (
       <div className="App">
         <header className="App-header">
@@ -33,11 +30,11 @@ class App extends Component {
           </div>
         </header>
         <section className="posts">
-          { this.state.posts.map(post => {
+          { posts.map(post => {
             return (
-              <article style={{ margin: '10px 0', padding: 10, border: '1px solid #ccc'}}>
+              <article key={`post-${post.id}`} style={{ margin: '10px 0', padding: 10, border: '1px solid #ccc'}}>
                 <p style={{ textDecoration: 'underline', fontWeight: 'bold' }}>{ post.title }</p>
-                <p>{ post.userId }</p>
+                <p>{ usersById[ post.userId ].username || 'Unknown' }</p>
                 <p>{ post.body }</p>
               </article>
             )
